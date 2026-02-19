@@ -1,4 +1,5 @@
 ﻿using MES_Lite.MesEntities;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,16 @@ namespace MES_Lite.MesTasks
 {
     internal class ValidationStage: IValidationStage
     {
+        private readonly ILogger<ValidationStage> _logger;
 
+
+        public ValidationStage(ILogger<ValidationStage> logger) 
+        {
+            _logger = logger; 
+        }
+
+        //______________________________________________________________________________________
+        // Validates material definitions and writes valid ones to the output channel
         public async Task RunAsync(ChannelReader<MaterialDefinition> input, ChannelWriter<MaterialDefinition> output)
         {
             await foreach (var matdef in input.ReadAllAsync())
@@ -19,16 +29,8 @@ namespace MES_Lite.MesTasks
                 // Simulate validation logic
                 if (matdef.Conformity)
                 {
-                    try
-                    {
-                        Console.WriteLine($"VALIDATE---Material {matdef.Id} passed validation.");
-                        await output.WriteAsync(matdef);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error writing material {matdef.Id} to output: {ex.Message}");
-                        //await Task.FromException(ex);
-                    }
+                    _logger.LogInformation($"VALIDATE---Material {matdef.Id} passed validation.");
+                    await output.WriteAsync(matdef);
                 }
                 else
                 {
@@ -36,7 +38,11 @@ namespace MES_Lite.MesTasks
                 }
             }
             output.Complete();
-
         }
+
+
+
+
+
     }
 }

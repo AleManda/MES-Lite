@@ -11,9 +11,11 @@ namespace MES_Lite.MesTasks
 {
     internal class MaterialDefinitionGenerator : IMaterialDefinitionGenerator
     {
+        //______________________________________________________________________________________
+        // Simulates generation of material definitions and writes them to the output channel
         public async Task ProduceAsync(ChannelWriter<MaterialDefinition> writer)
         {
-            for (int i = 0; i < 60; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var matdef = new MaterialDefinition
                 {
@@ -29,15 +31,8 @@ namespace MES_Lite.MesTasks
                     MinQty = 1,
                     MaxQty = 100
                 };
-                try
-                {
-                    await writer.WriteAsync(matdef);
-                    await Task.Delay(Random.Shared.Next(10, 50));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error writing material {matdef.Id} to channel: {ex.Message}");
-                }
+                await writer.WriteAsync(matdef);
+                await Task.Delay(Random.Shared.Next(10, 50));
             }
             writer.Complete();
         }

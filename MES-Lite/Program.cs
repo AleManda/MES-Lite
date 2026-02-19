@@ -3,6 +3,7 @@ using MES_Lite.MesEntities;
 using MES_Lite.MesTasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 using System.Threading.Channels;
 
@@ -34,7 +35,7 @@ var host = Host.CreateDefaultBuilder(args)
         //    FullMode = BoundedChannelFullMode.Wait
         //}));
 
-
+        //Using wrapper classes for channels to allow for better DI and potential future enhancements
         services.AddSingleton<InputChannel>();
         services.AddSingleton<ValidatedChannel>();
         services.AddSingleton<AssignedChannel>();
@@ -42,8 +43,20 @@ var host = Host.CreateDefaultBuilder(args)
         //Orchestrator
         services.AddSingleton<IPipelineOrchestrator, PipelineOrchestrator>();
 
+        //Logging
+        services.AddLogging(builder =>
+        {
+            builder.AddSimpleConsole(options =>
+            {
+                options.SingleLine = true;
+                options.TimestampFormat = "HH:mm:ss ";
+            });
+        });
+
+
     })
     .Build();
 
+// Start the pipeline orchestrator
 await host.Services.GetRequiredService<IPipelineOrchestrator>().RunAsync();
 

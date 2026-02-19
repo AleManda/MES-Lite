@@ -39,7 +39,8 @@ namespace MES_Lite.MesTasks
             _assigned = assigned.ChannelAssigned;
         }
 
-        
+        //______________________________________________________________________________________
+        // Orchestrates the execution of the pipeline stages
         public async Task RunAsync()
         {
             var producerTask = _generator.ProduceAsync(_input.Writer);
@@ -48,7 +49,6 @@ namespace MES_Lite.MesTasks
             var finalTask = _final.RunAsync(_assigned.Reader);
 
             await Task.WhenAll(producerTask, validationTask, batchTask, finalTask);
-            //await Task.WhenAll(producerTask, validationTask);
 
         }
 

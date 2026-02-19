@@ -24,5 +24,11 @@ namespace MES_Lite.MesEntities
         public int MaxQty { get; set; }
 
         public string? BatchId { get; set; }
+
+        public bool RequiresDoubleCheck { get; set; } = false;
+
+        //public bool Validated { get; set; } = false;
+
+        public bool IsCritical { get; set; } = false;
     }
 }

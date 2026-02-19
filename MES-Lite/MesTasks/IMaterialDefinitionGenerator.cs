@@ -11,7 +11,7 @@ namespace MES_Lite.MesTasks
 {
     public interface IMaterialDefinitionGenerator
     {
-        Task ProduceAsync(ChannelWriter<MaterialDefinition> writer);
+        Task ProduceAsync(ChannelWriter<MaterialDefinition> writer, CancellationToken token = default);
     }
 
 }

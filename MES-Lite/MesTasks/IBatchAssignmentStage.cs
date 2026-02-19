@@ -11,7 +11,7 @@ namespace MES_Lite.MesTasks
 {
     public interface IBatchAssignmentStage
     {
-        Task RunAsync(ChannelReader<MaterialDefinition> input, ChannelWriter<MaterialDefinition> output);
+        Task RunAsync(ChannelReader<MaterialDefinition> input, ChannelWriter<MaterialDefinition> output, CancellationToken token = default);
     }
 
 }

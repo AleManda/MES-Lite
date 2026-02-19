@@ -8,6 +8,6 @@ namespace MES_Lite.MesTasks
 {
     public interface IPipelineOrchestrator
     {
-        Task RunAsync();
+        Task RunAsync(CancellationToken token);
     }
 }

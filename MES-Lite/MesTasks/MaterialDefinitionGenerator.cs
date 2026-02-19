@@ -13,10 +13,22 @@ namespace MES_Lite.MesTasks
     {
         //______________________________________________________________________________________
         // Simulates generation of material definitions and writes them to the output channel
-        public async Task ProduceAsync(ChannelWriter<MaterialDefinition> writer)
+        public async Task ProduceAsync(ChannelWriter<MaterialDefinition> writer, CancellationToken token = default)
         {
-            for (int i = 0; i < 1; i++)
+            string sourcestring = "Supplier A";
+            bool iscritical = false;
+
+
+            for (int i = 0; i < 25; i++)
             {
+                token.ThrowIfCancellationRequested();
+
+                if (i % 10 == 0)
+                { sourcestring = string.Empty; }
+
+                if (i % 12 == 0)
+                { iscritical = true; }
+
                 var matdef = new MaterialDefinition
                 {
                     Id = i,
@@ -24,13 +36,17 @@ namespace MES_Lite.MesTasks
                     Version = "1.0",
                     UoM = "pcs",
                     MaterialClassId = 1,
-                    Source = "Supplier A",
+                    Source = sourcestring,
                     MaterialTesSpecification = "Spec A",
                     Conformity = true,
                     Type = "Type A",
                     MinQty = 1,
-                    MaxQty = 100
+                    MaxQty = 100,
+                    IsCritical = iscritical
                 };
+
+                sourcestring = "Supplier A";
+                iscritical = false;
                 await writer.WriteAsync(matdef);
                 await Task.Delay(Random.Shared.Next(10, 50));
             }

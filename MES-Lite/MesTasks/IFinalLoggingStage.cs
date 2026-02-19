@@ -11,7 +11,7 @@ namespace MES_Lite.MesTasks
 {
     public interface IFinalLoggingStage
     {
-        Task RunAsync(ChannelReader<MaterialDefinition> input);
+        Task RunAsync(ChannelReader<MaterialDefinition> input, CancellationToken token = default);
     }
 
 }

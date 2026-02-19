@@ -11,17 +11,19 @@ namespace MES_Lite.MesTasks
 {
     internal class BatchAssignmentStage:IBatchAssignmentStage
     {
-        private readonly ILogger<ValidationStage> _logger;
+        private readonly ILogger<BatchAssignmentStage> _logger;
 
-        public BatchAssignmentStage(ILogger<ValidationStage> logger)
+        public BatchAssignmentStage(ILogger<BatchAssignmentStage> logger)
         {
             _logger = logger;
         }
-        public async Task RunAsync(ChannelReader<MaterialDefinition> input, ChannelWriter<MaterialDefinition> output)
+        public async Task RunAsync(ChannelReader<MaterialDefinition> input, ChannelWriter<MaterialDefinition> output, CancellationToken token = default)
         {
-
+            
             await foreach (var matdef in input.ReadAllAsync())
             {
+                token.ThrowIfCancellationRequested();
+
                 // Simulate batch assignment logic
                 matdef.BatchId = $"LOT-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString()[..4]}";
 

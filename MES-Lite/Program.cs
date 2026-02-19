@@ -58,5 +58,6 @@ var host = Host.CreateDefaultBuilder(args)
     .Build();
 
 // Start the pipeline orchestrator
-await host.Services.GetRequiredService<IPipelineOrchestrator>().RunAsync();
+using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+await host.Services.GetRequiredService<IPipelineOrchestrator>().RunAsync(cts.Token);
 

@@ -11,7 +11,9 @@ namespace MES_Lite.MesTasks
 {
     public interface IValidationStage
     {
-        Task RunAsync(ChannelReader<MaterialDefinition> input, ChannelWriter<MaterialDefinition> output);
+        int DiscardedCount { get;}
+
+        Task RunAsync(ChannelReader<MaterialDefinition> input, ChannelWriter<MaterialDefinition> output, CancellationToken token = default);
     }
 
 }

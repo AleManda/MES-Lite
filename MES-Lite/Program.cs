@@ -1,15 +1,31 @@
-﻿using MES_Lite.MesChannels;
+﻿using MES_Lite.Data;
+using MES_Lite.MesChannels;
 using MES_Lite.MesEntities;
 using MES_Lite.MesTasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel;
 using System.Threading.Channels;
 
+
 var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
+    .ConfigureAppConfiguration(config =>
     {
+        config.SetBasePath(Directory.GetCurrentDirectory()); // Imposta la root
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    })
+    .ConfigureServices((hostContext,services) =>
+    {
+
+        //Database context
+        var connectionString = hostContext.Configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<MesLiteDbContext>(options => options.UseSqlServer(connectionString));
+
+
         //workers
         services.AddSingleton<IMaterialDefinitionGenerator, MaterialDefinitionGenerator>();
         services.AddSingleton<IValidationStage, ValidationStage>();
@@ -52,6 +68,9 @@ var host = Host.CreateDefaultBuilder(args)
                 options.TimestampFormat = "HH:mm:ss ";
             });
         });
+
+
+
 
 
     })

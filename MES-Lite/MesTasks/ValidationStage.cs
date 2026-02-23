@@ -54,11 +54,11 @@ namespace MES_Lite.MesTasks
             // Implement actual validation logic here
             matdef.RequiresDoubleCheck = matdef switch
             {
-                { IsCritical: true } => true,
+                { Critical: true } => true,
                 _ => false
             };
 
-            return string.IsNullOrEmpty(matdef.Source) ?  false : true;
+            return string.IsNullOrEmpty(matdef.Supplier) ?  false : true;
         }
 
 

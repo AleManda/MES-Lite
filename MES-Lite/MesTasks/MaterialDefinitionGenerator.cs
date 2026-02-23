@@ -31,18 +31,16 @@ namespace MES_Lite.MesTasks
 
                 var matdef = new MaterialDefinition
                 {
-                    Id = i,
+                    //id(IDENTITY) autogenerato da EF Core, non lo setto
+                    MaterialId = i.ToString(),
                     Description = $"Component {i}",
                     Version = "1.0",
                     UoM = "pcs",
                     MaterialClassId = 1,
-                    Source = sourcestring,
-                    MaterialTesSpecification = "Spec A",
+                    Supplier = sourcestring,
+                    Specification = "Spec A",
                     Conformity = true,
-                    Type = "Type A",
-                    MinQty = 1,
-                    MaxQty = 100,
-                    IsCritical = iscritical
+                    Critical = iscritical
                 };
 
                 sourcestring = "Supplier A";

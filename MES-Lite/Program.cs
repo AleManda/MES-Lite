@@ -3,6 +3,7 @@ using MES_Lite.MesChannels;
 using MES_Lite.MesEntities;
 using MES_Lite.MesTasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -80,3 +81,36 @@ var host = Host.CreateDefaultBuilder(args)
 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 await host.Services.GetRequiredService<IPipelineOrchestrator>().RunAsync(cts.Token);
 
+
+
+
+// This factory is used by EF Core tools to create the DbContext at design time (e.g., for migrations)
+// It is not used at runtime, but it is necessary for EF Core to work properly with our DbContext
+//FinalLoggingStage is a singleton and depends on a scoped dbcontext, so it will be shared across the application,
+//but EF Core tools need a way to create an instance of the DbContext without going through
+//the full DI setup, hence this factory.EF cannot create migrations if you have a singleton that depends on a
+//scoped service, so we need to provide a way for EF to create the DbContext without resolving the singleton.
+//FinalLoggingStage will be shared across the application, but EF Core tools need a way to create an instance of
+//the DbContext without going through the full DI setup, hence this factory.
+//just define a class that implements IDesignTimeDbContextFactory and creates the DbContext with the same connection
+//string as the application.EF Core tools will automatically use this factory to create the DbContext when running
+//commands like "Add-Migration" or "Update-Database" in the Package Manager Console, allowing it to work properly
+//even with our singleton that depends on a scoped service.
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore.Design;
+
+//namespace MES_Lite.Data
+//{
+//    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+//    {
+//        public AppDbContext CreateDbContext(string[] args)
+//        {
+//            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+
+//            optionsBuilder.UseSqlServer(
+//                "Server=localhost;Database=MESLite;Trusted_Connection=True;TrustServerCertificate=True;");
+
+//            return new AppDbContext(optionsBuilder.Options);
+//        }
+//    }
+//}

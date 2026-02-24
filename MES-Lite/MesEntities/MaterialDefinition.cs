@@ -10,17 +10,25 @@ namespace MES_Lite.MesEntities
     public record MaterialDefinition
     {
         public int Id { get; set; }
+        [Required]
         public string MaterialId { get; set; } = default!; // Codice materiale
-        public string Description { get; set; } = default!; 
-        public string Version { get; set; } = "1.0"; 
-        public string UoM { get; set; } = "pcs"; 
+        [Required]
+        public string Description { get; set; } = default!;
+        [Required]
+        public string Version { get; set; } = "1.0";
+        [Required]
+        public string UoM { get; set; } = "pcs";
+        [Required]
         public int MaterialClassId { get; set; } 
         public string? Specification { get; set; } 
-        public string? Supplier { get; set; } 
+        public string? Supplier { get; set; }
+        [Required]
         public bool Conformity { get; set; }
 
         // Logica MES-Lite
-        public bool Critical { get; set; } 
+        [Required]
+        public bool Critical { get; set; }
+        [Required]
         public bool RequiresDoubleCheck { get; set; }
 
         // Relazione con MaterialLot

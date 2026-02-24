@@ -6,37 +6,36 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MES_Lite.Web.Controllers
 {
-    public class MaterialDefinitionsController : Controller
+    public class PersonnelsController : Controller
     {
         private readonly MesLiteDbContext _context;
         private readonly IConfiguration Configuration;
 
-        public MaterialDefinitionsController(MesLiteDbContext context, IConfiguration configuration)
+        public PersonnelsController(MesLiteDbContext context, IConfiguration configuration)
         {
             _context = context;
             Configuration = configuration;
         }
 
-        //_________________________________________________________________________________________
-        // GET: MaterialDefinitions
+        // GET: Personnels
         public async Task<IActionResult> Index(int? pageIndex)
         {
-            IQueryable<MaterialDefinition> query = _context.MaterialDefinitions;
+            IQueryable<Personnel> query = _context.Personnel;
 
-            var pageSize = Configuration.GetValue("PageSize", 11);
+            var pageSize = Configuration.GetValue("PageSize", 10);
 
-            return View(await PaginatedList<MaterialDefinition>.CreateAsync(
+            return View(await PaginatedList<Personnel>.CreateAsync(
                 query.AsNoTracking(), pageIndex ?? 1, pageSize));
+
+            //return View(await _context.Personnel.ToListAsync());
         }
 
-        //_________________________________________________________________________________________
-        // GET: MaterialDefinitions/Details/5
+        // GET: Personnels/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,42 +43,39 @@ namespace MES_Lite.Web.Controllers
                 return NotFound();
             }
 
-            var materialDefinition = await _context.MaterialDefinitions
+            var personnel = await _context.Personnel
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (materialDefinition == null)
+            if (personnel == null)
             {
                 return NotFound();
             }
 
-            return View(materialDefinition);
+            return View(personnel);
         }
 
-        //_________________________________________________________________________________________
-        // GET: MaterialDefinitions/Create
+        // GET: Personnels/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        //_________________________________________________________________________________________
-        // POST: MaterialDefinitions/Create
+        // POST: Personnels/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MaterialId,Description,Version,UoM,MaterialClassId,Specification,Supplier,Conformity,Critical,RequiresDoubleCheck")] MaterialDefinition materialDefinition)
+        public async Task<IActionResult> Create([Bind("Id,PersonId,Name,Role,Qualification")] Personnel personnel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(materialDefinition);
+                _context.Add(personnel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(materialDefinition);
+            return View(personnel);
         }
 
-        //_________________________________________________________________________________________
-        // GET: MaterialDefinitions/Edit/5
+        // GET: Personnels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,23 +83,22 @@ namespace MES_Lite.Web.Controllers
                 return NotFound();
             }
 
-            var materialDefinition = await _context.MaterialDefinitions.FindAsync(id);
-            if (materialDefinition == null)
+            var personnel = await _context.Personnel.FindAsync(id);
+            if (personnel == null)
             {
                 return NotFound();
             }
-            return View(materialDefinition);
+            return View(personnel);
         }
 
-        //_________________________________________________________________________________________
-        // POST: MaterialDefinitions/Edit/5
+        // POST: Personnels/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MaterialId,Description,Version,UoM,MaterialClassId,Specification,Supplier,Conformity,Critical,RequiresDoubleCheck")] MaterialDefinition materialDefinition)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PersonId,Name,Role,Qualification")] Personnel personnel)
         {
-            if (id != materialDefinition.Id)
+            if (id != personnel.Id)
             {
                 return NotFound();
             }
@@ -112,12 +107,12 @@ namespace MES_Lite.Web.Controllers
             {
                 try
                 {
-                    _context.Update(materialDefinition);
+                    _context.Update(personnel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MaterialDefinitionExists(materialDefinition.Id))
+                    if (!PersonnelExists(personnel.Id))
                     {
                         return NotFound();
                     }
@@ -128,11 +123,10 @@ namespace MES_Lite.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(materialDefinition);
+            return View(personnel);
         }
 
-        //_________________________________________________________________________________________
-        // GET: MaterialDefinitions/Delete/5
+        // GET: Personnels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,36 +134,34 @@ namespace MES_Lite.Web.Controllers
                 return NotFound();
             }
 
-            var materialDefinition = await _context.MaterialDefinitions
+            var personnel = await _context.Personnel
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (materialDefinition == null)
+            if (personnel == null)
             {
                 return NotFound();
             }
 
-            return View(materialDefinition);
+            return View(personnel);
         }
 
-
-        //_________________________________________________________________________________________
-        // POST: MaterialDefinitions/Delete/5
+        // POST: Personnels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var materialDefinition = await _context.MaterialDefinitions.FindAsync(id);
-            if (materialDefinition != null)
+            var personnel = await _context.Personnel.FindAsync(id);
+            if (personnel != null)
             {
-                _context.MaterialDefinitions.Remove(materialDefinition);
+                _context.Personnel.Remove(personnel);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MaterialDefinitionExists(int id)
+        private bool PersonnelExists(int id)
         {
-            return _context.MaterialDefinitions.Any(e => e.Id == id);
+            return _context.Personnel.Any(e => e.Id == id);
         }
     }
 }

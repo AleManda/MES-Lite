@@ -1,29 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MES_Lite.Data;
+using MES_Lite.MesEntities;
+using MES_Lite.Web.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MES_Lite.Data;
-using MES_Lite.MesEntities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MES_Lite.Web.Controllers
 {
     public class MaterialLotsController : Controller
     {
         private readonly MesLiteDbContext _context;
+        private readonly IConfiguration Configuration;
 
-        public MaterialLotsController(MesLiteDbContext context)
+        public MaterialLotsController(MesLiteDbContext context, IConfiguration configuration)
         {
             _context = context;
+            Configuration = configuration;
         }
 
         // GET: MaterialLots
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageIndex)
         {
-            var mesLiteDbContext = _context.MaterialLots.Include(m => m.MaterialDefinition);
-            return View(await mesLiteDbContext.ToListAsync());
+            IQueryable<MaterialLot> query = _context.MaterialLots.Include(m => m.MaterialDefinition);
+
+            var pageSize = Configuration.GetValue("PageSize", 11);
+
+            return View(await PaginatedList<MaterialLot>.CreateAsync(
+                query.AsNoTracking(), pageIndex ?? 1, pageSize));
         }
 
         // GET: MaterialLots/Details/5

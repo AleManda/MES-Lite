@@ -1,10 +1,10 @@
-﻿@model IEnumerable<MES_Lite.MesEntities.MaterialDefinition>
+﻿@model MES_Lite.Web.Common.PaginatedList<MES_Lite.MesEntities.MaterialDefinition>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Material Definitions";
 }
 
-<h1>Index</h1>
+<h1>Material Definitions</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,34 +13,34 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.MaterialId)
+                @Html.DisplayNameFor(model => model[0].MaterialId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Version)
+                @Html.DisplayNameFor(model => model[0].Version)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UoM)
+                @Html.DisplayNameFor(model => model[0].UoM)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MaterialClassId)
+                @Html.DisplayNameFor(model => model[0].MaterialClassId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Specification)
+                @Html.DisplayNameFor(model => model[0].Specification)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier)
+                @Html.DisplayNameFor(model => model[0].Supplier)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Conformity)
+                @Html.DisplayNameFor(model => model[0].Conformity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Critical)
+                @Html.DisplayNameFor(model => model[0].Critical)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RequiresDoubleCheck)
+                @Html.DisplayNameFor(model => model[0].RequiresDoubleCheck)
             </th>
             <th></th>
         </tr>
@@ -87,3 +87,20 @@
 }
     </tbody>
 </table>
+
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    <a asp-page="/MaterialDefinitions/Index"
+       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       class="btn btn-primary @prevDisabled">
+        Previous
+    </a>
+    <a asp-page="/MaterialDefinitions/Index"
+       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       class="btn btn-primary @nextDisabled">
+        Next
+    </a>
+}

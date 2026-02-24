@@ -1,0 +1,77 @@
+﻿@model MES_Lite.Web.Common.PaginatedList<MES_Lite.MesEntities.Equipment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Equipments</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model[0].EquipmentId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].EquipmentClassId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EquipmentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EquipmentClassId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    <a asp-page="/Equipments/Index"
+       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       class="btn btn-primary @prevDisabled">
+        Previous
+    </a>
+    <a asp-page="/Equipments/Index"
+       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       class="btn btn-primary @nextDisabled">
+        Next
+    </a>
+}

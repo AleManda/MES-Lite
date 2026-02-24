@@ -1,10 +1,10 @@
-﻿@model IEnumerable<MES_Lite.MesEntities.MaterialLot>
+﻿@model MES_Lite.Web.Common.PaginatedList<MES_Lite.MesEntities.MaterialLot>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Material Lots";
 }
 
-<h1>Index</h1>
+<h1>Material Lots</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,25 +13,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.LotId)
+                @Html.DisplayNameFor(model => model[0].LotId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MaterialDefinition)
+                @Html.DisplayNameFor(model => model[0].MaterialDefinition)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Quantity)
+                @Html.DisplayNameFor(model => model[0].Quantity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                @Html.DisplayNameFor(model => model[0].Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier)
+                @Html.DisplayNameFor(model => model[0].Supplier)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
+                @Html.DisplayNameFor(model => model[0].CreatedAt)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ExpirationDate)
+                @Html.DisplayNameFor(model => model[0].ExpirationDate)
             </th>
             <th></th>
         </tr>
@@ -69,3 +69,20 @@
 }
     </tbody>
 </table>
+
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    <a asp-page="/MaterialDefinitions/Index"
+       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       class="btn btn-primary @prevDisabled">
+        Previous
+    </a>
+    <a asp-page="/MaterialDefinitions/Index"
+       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       class="btn btn-primary @nextDisabled">
+        Next
+    </a>
+}

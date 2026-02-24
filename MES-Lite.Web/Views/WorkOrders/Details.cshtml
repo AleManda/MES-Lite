@@ -1,0 +1,48 @@
+﻿@model MES_Lite.MesEntities.WorkOrder
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>WorkOrder</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.WorkOrderId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.WorkOrderId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ScheduledStart)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ScheduledStart)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ScheduledEnd)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ScheduledEnd)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

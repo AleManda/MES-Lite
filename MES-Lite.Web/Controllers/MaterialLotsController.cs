@@ -1,6 +1,7 @@
 ﻿using MES_Lite.Data;
 using MES_Lite.MesEntities;
 using MES_Lite.Web.Common;
+using MES_Lite.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,60 @@ namespace MES_Lite.Web.Controllers
         }
 
         // GET: MaterialLots
-        public async Task<IActionResult> Index(int? pageIndex)
+        public async Task<IActionResult> Index(string searchid,int searchmatdefid,int searchqty,
+                                               string searchstatus,string searchsupplier,
+                                               string searchcreatedat,string searchexpire,int? pageIndex)
         {
+            MaterialLotViewModel materialLotViewModel = new()
+            {
+                CurrentFilterId = searchid,
+                CurrentFilterMatdefId = searchmatdefid,
+                CurrentFilterQuantity = searchqty,
+                CurrentFilterStatus = searchstatus,
+                CurrentFilterSupplier = searchsupplier,
+                CurrentFilterCreatedAt = searchcreatedat,
+                CurrentFilterExpiration = searchexpire
+
+            };
+
             IQueryable<MaterialLot> query = _context.MaterialLots.Include(m => m.MaterialDefinition);
 
-            var pageSize = Configuration.GetValue("PageSize", 11);
+            //Filtri presenti nella query
+            if (!string.IsNullOrEmpty(searchid))
+            {
+                query = query.Where(l => l.LotId.Contains(searchid));
+            }
+            if (searchmatdefid > 0)
+            {
+                query = query.Where(l => l.MaterialDefinitionId == searchmatdefid);
+            }
+            if (searchqty > 0)
+            {
+                query = query.Where(l => l.Quantity == searchmatdefid);
+            }
+            if (!string.IsNullOrEmpty(searchstatus))
+            {
+                query = query.Where(l => l.Status.Contains(searchstatus));
+            }
+            if (!string.IsNullOrEmpty(searchsupplier))
+            {
+                query = query.Where(l => l.Supplier.Contains(searchsupplier));
+            }
+            if (!string.IsNullOrEmpty(searchcreatedat) && DateOnly.TryParse(searchcreatedat, out var parsedDateAt))
+            {
+                query = query.Where(l => DateOnly.FromDateTime(l.CreatedAt) == parsedDateAt);
+            }
+            if (!string.IsNullOrEmpty(searchexpire) && DateOnly.TryParse(searchexpire, out var parsedDateEx))
+            {
+                query = query.Where(l => DateOnly.FromDateTime( l.CreatedAt) == parsedDateEx);
+            }
 
-            return View(await PaginatedList<MaterialLot>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize));
+            var pageSize = Configuration.GetValue("PageSize", 10);
+
+            materialLotViewModel.MaterialLotsList = await PaginatedList<MaterialLot>.CreateAsync(
+                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+
+            return View(materialLotViewModel);
         }
 
         // GET: MaterialLots/Details/5

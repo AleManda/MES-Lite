@@ -1,4 +1,4 @@
-﻿@model MES_Lite.Web.Common.PaginatedList<MES_Lite.MesEntities.WorkOrder>
+﻿@model MES_Lite.Web.Models.WorkOrderViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,29 +9,91 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+
+<form asp-page="" method="get">
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model[0].WorkOrderId)
+                @Html.DisplayNameFor(model => model.WorkOrderList[0].WorkOrderId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Description)
+                @Html.DisplayNameFor(model => model.WorkOrderList[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].ScheduledStart)
+                @Html.DisplayNameFor(model => model.WorkOrderList[0].ScheduledStart)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].ScheduledEnd)
+                @Html.DisplayNameFor(model => model.WorkOrderList[0].ScheduledEnd)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Status)
+                @Html.DisplayNameFor(model => model.WorkOrderList[0].Status)
             </th>
             <th></th>
         </tr>
+
+            <tr>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchworderid" asp-for="CurrentFilterWorkOrderId" />
+                        </p>
+                    </div>
+
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchdescr" asp-for="CurrentFilterDescr" />
+                        </p>
+                    </div>
+
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="date" name="searchstartdate" asp-for="CurrentFilterSchedStart" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="date" name="searchenddate" asp-for="CurrentFilterSchedEnd" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchstatus" asp-for="CurrentFilterStatus" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="submit" value="Search" class="btn-primary" />
+                        </p>
+                    </div>
+                </th>
+
+                <th></th>
+            </tr>
+
+
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.WorkOrderList) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.WorkOrderId)
@@ -57,19 +119,32 @@
 }
     </tbody>
 </table>
+</form>
 
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.WorkOrderList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.WorkOrderList.HasNextPage ? "disabled" : "";
 
     <a asp-page="/WorkOrders/Index"
-       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       asp-route-searchworderid="@(Model.CurrentFilterWorkOrderId)"
+       asp-route-searchdescr="@(Model.CurrentFilterDescr)"
+       asp-route-searchstartdate="@(Model.CurrentFilterSchedStart)"
+       asp-route-searchenddate="@(Model.CurrentFilterSchedEnd)"
+       asp-route-searchstatus="@(Model.CurrentFilterStatus)"
+
+       asp-route-pageIndex="@(Model.WorkOrderList.PageIndex - 1)"
        class="btn btn-primary @prevDisabled">
         Previous
     </a>
     <a asp-page="/WorkOrders/Index"
-       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       asp-route-searchworderid="@(Model.CurrentFilterWorkOrderId)"
+       asp-route-searchdescr="@(Model.CurrentFilterDescr)"
+       asp-route-searchstartdate="@(Model.CurrentFilterSchedStart)"
+       asp-route-searchenddate="@(Model.CurrentFilterSchedEnd)"
+       asp-route-searchstatus="@(Model.CurrentFilterStatus)"
+
+       asp-route-pageIndex="@(Model.WorkOrderList.PageIndex + 1)"
        class="btn btn-primary @nextDisabled">
         Next
     </a>

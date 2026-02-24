@@ -1,4 +1,4 @@
-﻿@model MES_Lite.Web.Common.PaginatedList<MES_Lite.MesEntities.MaterialLot>
+﻿@model MES_Lite.Web.Models.MaterialLotViewModel
 
 @{
     ViewData["Title"] = "Material Lots";
@@ -9,41 +9,124 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-page="" method="get">
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model[0].LotId)
+                @Html.DisplayNameFor(model => model.MaterialLotsList[0].LotId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].MaterialDefinition)
+                @Html.DisplayNameFor(model => model.MaterialLotsList[0].MaterialDefinition)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Quantity)
+                @Html.DisplayNameFor(model => model.MaterialLotsList[0].Quantity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Status)
+                @Html.DisplayNameFor(model => model.MaterialLotsList[0].Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Supplier)
+                @Html.DisplayNameFor(model => model.MaterialLotsList[0].Supplier)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].CreatedAt)
+                @Html.DisplayNameFor(model => model.MaterialLotsList[0].CreatedAt)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].ExpirationDate)
+                @Html.DisplayNameFor(model => model.MaterialLotsList[0].ExpirationDate)
             </th>
             <th></th>
         </tr>
+
+
+        <tr>
+            <th>
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="text" name="searchid" asp-for="CurrentFilterId" />
+                    </p>
+                </div>
+
+            </th>
+            <th>
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="text" name="searchmatdefid" asp-for="CurrentFilterMatdefId" />
+                    </p>
+                </div>
+
+            </th>
+            <th>
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="text" name="searchqty" asp-for="CurrentFilterQuantity" />
+
+                    </p>
+                </div>
+            </th>
+            <th>
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="text" name="searchstatus" asp-for="CurrentFilterStatus" />
+
+                    </p>
+                </div>
+            </th>
+            <th>
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="number" name="searchsupplier" asp-for="CurrentFilterSupplier" />
+
+                    </p>
+                </div>
+            </th>
+            <th>
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="date" name="searchcreatedat" asp-for="CurrentFilterCreatedAt" />
+
+                    </p>
+                </div>
+            </th>
+            <th>
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="date" name="searchexpire" asp-for="CurrentFilterExpiration" />
+
+                    </p>
+                </div>
+            </th>
+            <th>
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="submit" value="Search" class="btn-primary" />
+                    </p>
+                </div>
+            </th>
+
+            <th></th>
+        </tr>
+
+
+
+
+
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.MaterialLotsList) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.LotId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MaterialDefinition.Description)
+                @Html.DisplayFor(modelItem => item.MaterialDefinitionId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Quantity)
@@ -69,19 +152,35 @@
 }
     </tbody>
 </table>
-
+</form>
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.MaterialLotsList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.MaterialLotsList.HasNextPage ? "disabled" : "";
 
     <a asp-page="/MaterialDefinitions/Index"
-       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       asp-route-searchid="@(Model.CurrentFilterId)"
+       asp-route-searchmatdefid="@(Model.CurrentFilterMatdefId)"
+       asp-route-searchqty="@(Model.CurrentFilterQuantity)"
+       asp-route-searchstatus="@(Model.CurrentFilterStatus)"
+       asp-route-searchsupplier="@(Model.CurrentFilterSupplier)"
+       asp-route-searchcreatedat="@(Model.CurrentFilterCreatedAt)"
+       asp-route-searchexpire="@(Model.CurrentFilterExpiration)"
+
+       asp-route-pageIndex="@(Model.MaterialLotsList.PageIndex - 1)"
        class="btn btn-primary @prevDisabled">
         Previous
     </a>
     <a asp-page="/MaterialDefinitions/Index"
-       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       asp-route-searchid="@(Model.CurrentFilterId)"
+       asp-route-searchmatdefid="@(Model.CurrentFilterMatdefId)"
+       asp-route-searchqty="@(Model.CurrentFilterQuantity)"
+       asp-route-searchstatus="@(Model.CurrentFilterStatus)"
+       asp-route-searchsupplier="@(Model.CurrentFilterSupplier)"
+       asp-route-searchcreatedat="@(Model.CurrentFilterCreatedAt)"
+       asp-route-searchexpire="@(Model.CurrentFilterExpiration)"
+
+       asp-route-pageIndex="@(Model.MaterialLotsList.PageIndex + 1)"
        class="btn btn-primary @nextDisabled">
         Next
     </a>

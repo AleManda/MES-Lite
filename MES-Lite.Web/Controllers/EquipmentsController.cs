@@ -1,6 +1,8 @@
 ﻿using MES_Lite.Data;
 using MES_Lite.MesEntities;
+using MES_Lite.MesEntities;
 using MES_Lite.Web.Common;
+using MES_Lite.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MES_Lite.MesEntities;
 
 namespace MES_Lite.Web.Controllers
 {
@@ -24,16 +25,49 @@ namespace MES_Lite.Web.Controllers
         }
 
         // GET: Equipments
-        public async Task<IActionResult> Index(int? pageIndex)
+        public async Task<IActionResult> Index(string searchid,string searchdescr,string searchclassid,string searchlocation,
+                                               string searchstatus,int? pageIndex)
         {
+            EquipmentViewModel equipmentViewModel = new()
+            {
+                CurrentFilterId = searchid,
+                CurrentFilterDescr = searchdescr,
+                CurrentFilterClassId = searchclassid,
+                CurrentFilterLocation = searchlocation,
+                CurrentFilterStatus = searchstatus
+
+            };
+
             IQueryable<Equipment> query = _context.Equipment;
 
-            var pageSize = Configuration.GetValue("PageSize", 11);
 
-            return View(await PaginatedList<Equipment>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize));
+            if (!string.IsNullOrEmpty(searchid))
+            {
+                query = query.Where(e => e.EquipmentId.Contains(searchid));
+            }
+            if (!string.IsNullOrEmpty(searchdescr))
+            {
+                query = query.Where(e => e.Description.Contains(searchdescr));
+            }
+            if (!string.IsNullOrEmpty(searchclassid))
+            {
+                query = query.Where(e => e.EquipmentClassId.Contains(searchclassid));
+            }
+            if (!string.IsNullOrEmpty(searchlocation))
+            {
+                query = query.Where(e => e.Location.Contains(searchlocation));
+            }
+            if (!string.IsNullOrEmpty(searchstatus))
+            {
+                query = query.Where(e => e.Status.Contains(searchstatus));
+            }
 
-            //return View(await _context.Equipment.ToListAsync());
+            var pageSize = Configuration.GetValue("PageSize", 10);
+
+            equipmentViewModel.EquipmentList = await PaginatedList<Equipment>.CreateAsync(
+                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+
+            return View(equipmentViewModel);
         }
 
         // GET: Equipments/Details/5

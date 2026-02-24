@@ -1,6 +1,7 @@
 ﻿using MES_Lite.Data;
 using MES_Lite.MesEntities;
 using MES_Lite.Web.Common;
+using MES_Lite.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,42 @@ namespace MES_Lite.Web.Controllers
         }
 
         // GET: Personnels
-        public async Task<IActionResult> Index(int? pageIndex)
+        public async Task<IActionResult> Index(string searchid,string searchname,string searchrole,
+                                               string searchqual,int? pageIndex)
         {
+            PersonnelViewModel personnelViewModel = new()
+            {
+                CurrentFilterPersonId = searchid,
+                CurrentFilterName = searchname,
+                CurrentFilterRole = searchrole,
+                CurrentFilterQualification = searchqual
+            };
+
             IQueryable<Personnel> query = _context.Personnel;
+
+            if (!string.IsNullOrEmpty(searchid))
+            {
+                query = query.Where(p => p.PersonId.Contains(searchid));
+            }
+            if (!string.IsNullOrEmpty(searchname))
+            {
+                query = query.Where(p => p.Name.Contains(searchname));
+            }
+            if (!string.IsNullOrEmpty(searchrole))
+            {
+                query = query.Where(p => p.Role.Contains(searchrole));
+            }
+            if (!string.IsNullOrEmpty(searchqual))
+            {
+                query = query.Where(p => p.Qualification.Contains(searchqual));
+            }
 
             var pageSize = Configuration.GetValue("PageSize", 10);
 
-            return View(await PaginatedList<Personnel>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize));
+            personnelViewModel.PersonnelList = await PaginatedList<Personnel>.CreateAsync(
+                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+
+            return View(personnelViewModel);
 
             //return View(await _context.Personnel.ToListAsync());
         }

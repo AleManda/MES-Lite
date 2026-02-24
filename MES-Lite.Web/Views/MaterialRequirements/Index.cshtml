@@ -1,4 +1,4 @@
-﻿@model MES_Lite.Web.Common.PaginatedList<MES_Lite.MesEntities.MaterialRequirement>
+﻿@model MES_Lite.Web.Models.MaterialRequirementViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,23 +9,71 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+
+
+<form asp-page="" method="get">
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model[0].WorkOrder)
+                @Html.DisplayNameFor(model => model.MaterialRequirementList[0].WorkOrder)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].MaterialDefinition)
+                @Html.DisplayNameFor(model => model.MaterialRequirementList[0].MaterialDefinition)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].RequiredQuantity)
+                @Html.DisplayNameFor(model => model.MaterialRequirementList[0].RequiredQuantity)
             </th>
             <th></th>
         </tr>
+
+
+            <tr>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="number" name="searckworkorderid" asp-for="CurrentFilterWorkOrderId" />
+                        </p>
+                    </div>
+
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="number" name="searchmatdefid" asp-for="CurrentFilterMatDefId" />
+                        </p>
+                    </div>
+
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="number" name="searchqty" asp-for="CurrentFilterQuantity" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="submit" value="Search" class="btn-primary" />
+                        </p>
+                    </div>
+                </th>
+
+                <th></th>
+            </tr>
+
+
     </thead>
     <tbody>
-@foreach (var item in Model) {
+
+
+@foreach (var item in Model.MaterialRequirementList) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.WorkOrder.Description)
@@ -45,19 +93,28 @@
 }
     </tbody>
 </table>
+</form>
 
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.MaterialRequirementList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.MaterialRequirementList.HasNextPage ? "disabled" : "";
 
     <a asp-page="/MaterialRequirements/Index"
-       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       asp-route-searckworkorderid="@(Model.CurrentFilterWorkOrderId)"
+       asp-route-searchmatdefid="@(Model.CurrentFilterMatDefId)"
+       asp-route-searchqty="@(Model.CurrentFilterQuantity)"
+
+       asp-route-pageIndex="@(Model.MaterialRequirementList.PageIndex - 1)"
        class="btn btn-primary @prevDisabled">
         Previous
     </a>
     <a asp-page="/MaterialRequirements/Index"
-       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       asp-route-searckworkorderid="@(Model.CurrentFilterWorkOrderId)"
+       asp-route-searchmatdefid="@(Model.CurrentFilterMatDefId)"
+       asp-route-searchqty="@(Model.CurrentFilterQuantity)"
+
+       asp-route-pageIndex="@(Model.MaterialRequirementList.PageIndex + 1)"
        class="btn btn-primary @nextDisabled">
         Next
     </a>

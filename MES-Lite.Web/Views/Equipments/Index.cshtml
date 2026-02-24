@@ -1,4 +1,4 @@
-﻿@model MES_Lite.Web.Common.PaginatedList<MES_Lite.MesEntities.Equipment>
+﻿@model MES_Lite.Web.Models.EquipmentViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,29 +9,93 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+
+
+<form asp-page="" method="get">
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model[0].EquipmentId)
+                @Html.DisplayNameFor(model => model.EquipmentList[0].EquipmentId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Description)
+                @Html.DisplayNameFor(model => model.EquipmentList[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].EquipmentClassId)
+                @Html.DisplayNameFor(model => model.EquipmentList[0].EquipmentClassId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Location)
+                @Html.DisplayNameFor(model => model.EquipmentList[0].Location)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Status)
+                @Html.DisplayNameFor(model => model.EquipmentList[0].Status)
             </th>
             <th></th>
         </tr>
+
+                   <tr>
+                    <th>
+
+                        <div class="form-actions no-color">
+                            <p>
+                                <input type="text" name="searchid" asp-for="CurrentFilterId" />
+                            </p>
+                        </div>
+
+                    </th>
+                    <th>
+
+                        <div class="form-actions no-color">
+                            <p>
+                                <input type="text" name="searchdescr" asp-for="CurrentFilterDescr" />
+                            </p>
+                        </div>
+
+                    </th>
+                    <th>
+
+                        <div class="form-actions no-color">
+                            <p>
+                                <input type="text" name="searchclassid" asp-for="CurrentFilterClassId" />
+
+                            </p>
+                        </div>
+                    </th>
+                    <th>
+
+                        <div class="form-actions no-color">
+                            <p>
+                                <input type="text" name="searchlocation" asp-for="CurrentFilterLocation" />
+
+                            </p>
+                        </div>
+                    </th>
+                    <th>
+
+                        <div class="form-actions no-color">
+                            <p>
+                                <input type="text" name="searchstatus" asp-for="CurrentFilterStatus" />
+
+                            </p>
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="form-actions no-color">
+                            <p>
+                                <input type="submit" value="Search" class="btn-primary" />
+                            </p>
+                        </div>
+                    </th>
+                    <th></th>
+                </tr>
+
+
     </thead>
     <tbody>
-@foreach (var item in Model) {
+
+@foreach (var item in Model.EquipmentList) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.EquipmentId)
@@ -54,23 +118,40 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
+
+
+
+
+
 }
     </tbody>
 </table>
-
+</form>
 
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.EquipmentList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.EquipmentList.HasNextPage ? "disabled" : "";
 
     <a asp-page="/Equipments/Index"
-       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       asp-route-searchid="@(Model.CurrentFilterId)"
+       asp-route-searchdescr="@(Model.CurrentFilterDescr)"
+       asp-route-searchclassid="@(Model.CurrentFilterClassId)"
+       asp-route-searchlocation="@(Model.CurrentFilterLocation)"
+       asp-route-searchstatus="@(Model.CurrentFilterStatus)"
+
+       asp-route-pageIndex="@(Model.EquipmentList.PageIndex - 1)"
        class="btn btn-primary @prevDisabled">
         Previous
     </a>
     <a asp-page="/Equipments/Index"
-       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       asp-route-searchid="@(Model.CurrentFilterId)"
+       asp-route-searchdescr="@(Model.CurrentFilterDescr)"
+       asp-route-searchclassid="@(Model.CurrentFilterClassId)"
+       asp-route-searchlocation="@(Model.CurrentFilterLocation)"
+       asp-route-searchstatus="@(Model.CurrentFilterStatus)"
+
+       asp-route-pageIndex="@(Model.EquipmentList.PageIndex + 1)"
        class="btn btn-primary @nextDisabled">
         Next
     </a>

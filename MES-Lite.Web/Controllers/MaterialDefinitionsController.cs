@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using MES_Lite.Web.Models;
 
 namespace MES_Lite.Web.Controllers
 {
@@ -16,6 +17,9 @@ namespace MES_Lite.Web.Controllers
     {
         private readonly MesLiteDbContext _context;
         private readonly IConfiguration Configuration;
+
+
+
 
         public MaterialDefinitionsController(MesLiteDbContext context, IConfiguration configuration)
         {
@@ -25,14 +29,59 @@ namespace MES_Lite.Web.Controllers
 
         //_________________________________________________________________________________________
         // GET: MaterialDefinitions
-        public async Task<IActionResult> Index(int? pageIndex)
+        public async Task<IActionResult> Index(string searchid,string searchdescr,string searchversion,string searchuom,
+            int searchclassid,string searchspec,string searchsupplier,int? pageIndex)
         {
+
+            MaterialDefinitionViewModel materialDefinitionViewModel = new()
+            {
+                CurrentFilterId = searchid,
+                CurrentFilterDescr = searchdescr,
+                CurrentFilterVersion = searchversion,
+                CurrentFilterMatClassId = searchclassid,
+                CurrentFilterSpec = searchspec,
+                CurrentFilterSupplier = searchsupplier,
+                CurrentFilterUoM = searchuom
+
+            };
+
+            //query di base
             IQueryable<MaterialDefinition> query = _context.MaterialDefinitions;
 
-            var pageSize = Configuration.GetValue("PageSize", 11);
+            //Filtri presenti nella query
+            if (!string.IsNullOrEmpty(searchid))
+            {
+                query = query.Where(m => m.MaterialId.Contains(searchid));
+            }
+            if (!string.IsNullOrEmpty(searchdescr))
+            {
+                query = query.Where(m => m.Description.Contains(searchdescr));
+            }
+            if (!string.IsNullOrEmpty(searchversion))
+            {
+                query = query.Where(m => m.Version.Contains(searchversion));
+            }
 
-            return View(await PaginatedList<MaterialDefinition>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize));
+            if (searchclassid > 0)
+                query = query.Where(m => m.MaterialClassId == searchclassid);
+
+            if (!string.IsNullOrEmpty(searchspec))
+            {
+                query = query.Where(m => m.Specification.Contains(searchspec));
+            }
+            if (!string.IsNullOrEmpty(searchsupplier))
+            {
+                query = query.Where(m => m.Supplier.Contains(searchsupplier));
+            }
+
+
+            var pageSize = Configuration.GetValue("PageSize", 10);
+
+            // 
+            materialDefinitionViewModel.MaterialDefsList = await PaginatedList<MaterialDefinition>.CreateAsync(
+                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+
+            return View(materialDefinitionViewModel);
         }
 
         //_________________________________________________________________________________________
@@ -67,7 +116,9 @@ namespace MES_Lite.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MaterialId,Description,Version,UoM,MaterialClassId,Specification,Supplier,Conformity,Critical,RequiresDoubleCheck")] MaterialDefinition materialDefinition)
+        public async Task<IActionResult> Create(
+            [Bind("Id,MaterialId,Description,Version,UoM,MaterialClassId,Specification,Supplier,Conformity,Critical,RequiresDoubleCheck")] 
+                          MaterialDefinition materialDefinition)
         {
             if (ModelState.IsValid)
             {

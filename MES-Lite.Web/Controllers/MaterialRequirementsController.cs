@@ -1,6 +1,7 @@
 ﻿using MES_Lite.Data;
 using MES_Lite.MesEntities;
 using MES_Lite.Web.Common;
+using MES_Lite.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,37 @@ namespace MES_Lite.Web.Controllers
         }
 
         // GET: MaterialRequirements
-        public async Task<IActionResult> Index(int? pageIndex)
+        public async Task<IActionResult> Index(int searckworkorderid,int searchmatdefid,decimal searchqty,int? pageIndex)
         {
+            MaterialRequirementViewModel materialRequirementViewModel = new()
+            {
+                CurrentFilterWorkOrderId = searckworkorderid,
+                CurrentFilterMatDefId = searchmatdefid,
+                CurrentFilterQuantity = searchqty
+            };
+
             IQueryable<MaterialRequirement> query = _context.MaterialRequirements.Include(m => m.MaterialDefinition).Include(m => m.WorkOrder);
 
-            var pageSize = Configuration.GetValue("PageSize", 11);
+            //filtri
+            if(searckworkorderid > 0)
+            {
+                query = query.Where(m => m.WorkOrderId == searckworkorderid);
+            }
+            if (searchmatdefid > 0)
+            {
+                query = query.Where(m => m.MaterialDefinitionId == searckworkorderid);
+            }
+            if (searchqty > 0)
+            {
+                query = query.Where(m => m.RequiredQuantity == searchqty);
+            }
 
-            return View(await PaginatedList<MaterialRequirement>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize));
+            var pageSize = Configuration.GetValue("PageSize", 10);
+
+            materialRequirementViewModel.MaterialRequirementList = await PaginatedList<MaterialRequirement>.CreateAsync(
+                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+
+            return View(materialRequirementViewModel);
 
             //var mesLiteDbContext = _context.MaterialRequirements.Include(m => m.MaterialDefinition).Include(m => m.WorkOrder);
             //return View(await mesLiteDbContext.ToListAsync());
@@ -69,14 +93,14 @@ namespace MES_Lite.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,WorkOrderId,MaterialDefinitionId,RequiredQuantity")] MaterialRequirement materialRequirement)
+        public async Task<IActionResult> Create([Bind("WorkOrderId,MaterialDefinitionId,RequiredQuantity")] MaterialRequirement materialRequirement)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(materialRequirement);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            //    return RedirectToAction(nameof(Index));
+            //}
             ViewData["MaterialDefinitionId"] = new SelectList(_context.MaterialDefinitions, "Id", "Description", materialRequirement.MaterialDefinitionId);
             ViewData["WorkOrderId"] = new SelectList(_context.WorkOrders, "Id", "Description", materialRequirement.WorkOrderId);
             return View(materialRequirement);

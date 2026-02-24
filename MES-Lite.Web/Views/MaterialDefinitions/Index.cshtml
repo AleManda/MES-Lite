@@ -1,4 +1,4 @@
-﻿@model MES_Lite.Web.Common.PaginatedList<MES_Lite.MesEntities.MaterialDefinition>
+﻿@model MES_Lite.Web.Models.MaterialDefinitionViewModel
 
 @{
     ViewData["Title"] = "Material Definitions";
@@ -9,44 +9,127 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+
+<form asp-page="" method="get">
 <table class="table">
+
+
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model[0].MaterialId)
+                @Html.DisplayNameFor(model => model.MaterialDefsList[0].MaterialId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Description)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Version)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].Version)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].UoM)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].UoM)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].MaterialClassId)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].MaterialClassId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Specification)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].Specification)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Supplier)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].Supplier)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Conformity)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].Conformity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Critical)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].Critical)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].RequiresDoubleCheck)
+                    @Html.DisplayNameFor(model => model.MaterialDefsList[0].RequiresDoubleCheck)
             </th>
             <th></th>
         </tr>
+
+
+            <tr>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchid" asp-for="CurrentFilterId" />
+                        </p>
+                    </div>
+
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchdescr" asp-for="CurrentFilterDescr" />
+                        </p>
+                    </div>
+
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchversion" asp-for="CurrentFilterVersion" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchuom" asp-for="CurrentFilterUoM" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="number" name="searchclassid" asp-for="CurrentFilterMatClassId" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchspec" asp-for="CurrentFilterSpec" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="text" name="searchsupplier" asp-for="CurrentFilterSupplier" />
+
+                        </p>
+                    </div>
+                </th>
+                <th>
+                    <div class="form-actions no-color">
+                        <p>
+                            <input type="submit" value="Search" class="btn-primary" />
+                        </p>
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+
+
+
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.MaterialDefsList) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.MaterialId)
@@ -87,19 +170,36 @@
 }
     </tbody>
 </table>
+</form>
 
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.MaterialDefsList.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.MaterialDefsList.HasNextPage ? "disabled" : "";
 
     <a asp-page="/MaterialDefinitions/Index"
-       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       asp-route-searchid="@(Model.CurrentFilterId)"
+       asp-route-searchdescr="@(Model.CurrentFilterDescr)"
+       asp-route-searchversion="@(Model.CurrentFilterVersion)"
+       asp-route-searchuom="@(Model.CurrentFilterUoM)"
+       asp-route-searchclassid="@(Model.CurrentFilterMatClassId)"
+       asp-route-searchspec="@(Model.CurrentFilterSpec)"
+       asp-route-searchsupplier="@(Model.CurrentFilterSupplier)"
+
+       asp-route-pageIndex="@(Model.MaterialDefsList.PageIndex - 1)"
        class="btn btn-primary @prevDisabled">
         Previous
     </a>
     <a asp-page="/MaterialDefinitions/Index"
-       asp-route-pageIndex="@(Model.PageIndex + 1)"
+           asp-route-searchid="@(Model.CurrentFilterId)"
+       asp-route-searchdescr="@(Model.CurrentFilterDescr)"
+       asp-route-searchversion="@(Model.CurrentFilterVersion)"
+       asp-route-searchuom="@(Model.CurrentFilterUoM)"
+       asp-route-searchclassid="@(Model.CurrentFilterMatClassId)"
+       asp-route-searchspec="@(Model.CurrentFilterSpec)"
+       asp-route-searchsupplier="@(Model.CurrentFilterSupplier)"
+
+       asp-route-pageIndex="@(Model.MaterialDefsList.PageIndex + 1)"
        class="btn btn-primary @nextDisabled">
         Next
     </a>

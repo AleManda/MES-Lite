@@ -1,6 +1,7 @@
 ﻿using MES_Lite.Data;
 using MES_Lite.MesEntities;
 using MES_Lite.Web.Common;
+using MES_Lite.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,47 @@ namespace MES_Lite.Web.Controllers
         }
 
         // GET: WorkOrders
-        public async Task<IActionResult> Index(int? pageIndex)
+        public async Task<IActionResult> Index(string searchworderid,string searchdescr,string searchstartdate,
+                                               string searchenddate,string searchstatus,int? pageIndex)
         {
+            WorkOrderViewModel workOrderViewModel = new()
+            {
+                CurrentFilterWorkOrderId = searchworderid,
+                CurrentFilterDescr = searchdescr,
+                CurrentFilterSchedStart = searchstartdate,
+                CurrentFilterSchedEnd = searchenddate,
+                CurrentFilterStatus = searchstatus
+            };
+
             IQueryable<WorkOrder> query = _context.WorkOrders;
 
-            var pageSize = Configuration.GetValue("PageSize", 11);
+            if (!string.IsNullOrEmpty(searchworderid))
+            {
+                query = query.Where(w => w.WorkOrderId.Contains(searchworderid));
+            }
+            if (!string.IsNullOrEmpty(searchdescr))
+            {
+                query = query.Where(w => w.Description.Contains(searchdescr));
+            }
+            if (!string.IsNullOrEmpty(searchstartdate) && DateOnly.TryParse(searchstartdate, out var parsedDatestart))
+            {
+                query = query.Where(w => DateOnly.FromDateTime(w.ScheduledStart) == parsedDatestart);
+            }
+            if (!string.IsNullOrEmpty(searchenddate) && DateOnly.TryParse(searchenddate, out var parsedDateend))
+            {
+                query = query.Where(w => DateOnly.FromDateTime(w.ScheduledEnd) == parsedDateend);
+            }
+            if (!string.IsNullOrEmpty(searchstatus))
+            {
+                query = query.Where(w => w.Status.Contains(searchstatus));
+            }
 
-            return View(await PaginatedList<WorkOrder>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize));
+            var pageSize = Configuration.GetValue("PageSize", 10);
+
+            workOrderViewModel.WorkOrderList = await PaginatedList<WorkOrder>.CreateAsync(
+                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+
+            return View(workOrderViewModel);
 
             //return View(await _context.WorkOrders.ToListAsync());
         }

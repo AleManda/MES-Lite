@@ -5,6 +5,7 @@ using System.Threading;
 
 namespace MES_Lite.MesChannels
 {
+    // Wrapper class for a Channel<T>,used by the pipeline
     public class InputChannel
     {
         public Channel<MaterialDefinition> ChannelInput { get; }

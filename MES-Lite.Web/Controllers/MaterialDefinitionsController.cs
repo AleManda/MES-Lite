@@ -74,12 +74,26 @@ namespace MES_Lite.Web.Controllers
                 query = query.Where(m => m.Supplier.Contains(searchsupplier));
             }
 
+            IQueryable<MaterialDefinitionModel> query2 = query.Select(p => new MaterialDefinitionModel
+            {
+                Id = p.Id,
+                MaterialId = p.MaterialId,
+                MaterialClassId = p.MaterialClassId,
+                Description = p.Description,
+                Version = p.Version,
+                Conformity = p.Conformity,
+                Specification = p.Specification,
+                Supplier = p.Supplier,
+                UoM = p.UoM,
+                Critical = p.Critical,
+                RequiresDoubleCheck = p.RequiresDoubleCheck,
+            });
 
             var pageSize = Configuration.GetValue("PageSize", 10);
 
             // 
-            materialDefinitionViewModel.MaterialDefsList = await PaginatedList<MaterialDefinition>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+            materialDefinitionViewModel.MaterialDefsList = await PaginatedList<MaterialDefinitionModel>.CreateAsync(
+                query2.AsNoTracking(), pageIndex ?? 1, pageSize);
 
             return View(materialDefinitionViewModel);
         }

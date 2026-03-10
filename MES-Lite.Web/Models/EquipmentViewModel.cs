@@ -5,7 +5,7 @@ namespace MES_Lite.Web.Models
 {
     public class EquipmentViewModel
     {
-        public PaginatedList<Equipment> EquipmentList { get; set; }
+        public PaginatedList<EquipmentModel> EquipmentList { get; set; }
 
         public string? CurrentFilterId { get; set; } = string.Empty;
         public string? CurrentFilterDescr { get; set; } = string.Empty;

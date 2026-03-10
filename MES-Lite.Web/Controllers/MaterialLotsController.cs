@@ -72,10 +72,33 @@ namespace MES_Lite.Web.Controllers
                 query = query.Where(l => DateOnly.FromDateTime( l.CreatedAt) == parsedDateEx);
             }
 
+            IQueryable<MaterialLotModel> query2 = query.Select(ml => new MaterialLotModel
+            {
+                Id = ml.Id,
+                LotId = ml.LotId,
+                MaterialDefinitionId = ml.MaterialDefinitionId,
+                Supplier = ml.Supplier,
+                CreatedAt = ml.CreatedAt,
+                ExpirationDate = ml.ExpirationDate,
+                Quantity = ml.Quantity,
+                Status = ml.Status,
+                MaterialDefinition = new MaterialDefinitionModel
+                {
+                    Id = ml.MaterialDefinition.Id,
+                    MaterialId = ml.MaterialDefinition.MaterialId,
+                    Description = ml.MaterialDefinition.Description,
+                    Version = ml.MaterialDefinition.Version,
+                    MaterialClassId = ml.MaterialDefinition.MaterialClassId,
+                    Specification = ml.MaterialDefinition.Specification,
+                    Supplier = ml.MaterialDefinition.Supplier,
+                    UoM = ml.MaterialDefinition.UoM
+                }
+            });
+
             var pageSize = Configuration.GetValue("PageSize", 10);
 
-            materialLotViewModel.MaterialLotsList = await PaginatedList<MaterialLot>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+            materialLotViewModel.MaterialLotsList = await PaginatedList<MaterialLotModel>.CreateAsync(
+                query2.AsNoTracking(), pageIndex ?? 1, pageSize);
 
             return View(materialLotViewModel);
         }

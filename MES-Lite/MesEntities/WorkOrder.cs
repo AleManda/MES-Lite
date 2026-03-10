@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MES_Lite.MesEntities.Enums;
+
 
 namespace MES_Lite.MesEntities
 {
@@ -24,7 +26,8 @@ namespace MES_Lite.MesEntities
         [Required]
         public DateTime ScheduledEnd { get; set; }
         [Required]
-        public string Status { get; set; } = "Planned";       // Planned, Released, Running, Completed, Cancelled
+        public WorkOrderStatus Status { get; set; } = WorkOrderStatus.Planned;
+        // Planned, Released, Running, Completed, Cancelled
 
         // Relazioni ISA-95
         public ICollection<MaterialRequirement> MaterialRequirements { get; set; } = new List<MaterialRequirement>();

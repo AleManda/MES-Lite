@@ -54,10 +54,18 @@ namespace MES_Lite.Web.Controllers
                 query = query.Where(p => p.Qualification.Contains(searchqual));
             }
 
+            IQueryable<PersonnelModel> query2 = query.Select(p => new PersonnelModel
+            {
+                PersonId = p.PersonId,
+                Name = p.Name,
+                Role = p.Role,
+                Qualification = p.Qualification,
+            }) ;
+
             var pageSize = Configuration.GetValue("PageSize", 10);
 
-            personnelViewModel.PersonnelList = await PaginatedList<Personnel>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+            personnelViewModel.PersonnelList = await PaginatedList<PersonnelModel>.CreateAsync(
+                query2.AsNoTracking(), pageIndex ?? 1, pageSize);
 
             return View(personnelViewModel);
 

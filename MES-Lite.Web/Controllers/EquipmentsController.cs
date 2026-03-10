@@ -62,10 +62,20 @@ namespace MES_Lite.Web.Controllers
                 query = query.Where(e => e.Status.Contains(searchstatus));
             }
 
+            IQueryable<EquipmentModel> query2 = query.Select(p => new EquipmentModel
+            {
+                Id = p.Id,
+                EquipmentId = p.EquipmentId,
+                Description = p.Description,
+                EquipmentClassId = p.EquipmentClassId,
+                Location = p.Location,
+                Status = p.Status
+            });
+
             var pageSize = Configuration.GetValue("PageSize", 10);
 
-            equipmentViewModel.EquipmentList = await PaginatedList<Equipment>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+            equipmentViewModel.EquipmentList = await PaginatedList<EquipmentModel>.CreateAsync(
+                query2.AsNoTracking(), pageIndex ?? 1, pageSize);
 
             return View(equipmentViewModel);
         }

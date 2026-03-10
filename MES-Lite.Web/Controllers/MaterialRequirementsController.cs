@@ -49,10 +49,38 @@ namespace MES_Lite.Web.Controllers
                 query = query.Where(m => m.RequiredQuantity == searchqty);
             }
 
+            IQueryable<MaterialRequirementModel> query2 = query.Select(m => new MaterialRequirementModel
+            {
+                Id = m.Id,
+                MaterialDefinitionId = m.MaterialDefinitionId,
+                WorkOrderId = searckworkorderid,
+                RequiredQuantity = searchqty,
+                MaterialDefinition = new MaterialDefinitionModel
+                {
+                    Id = m.MaterialDefinition.Id,
+                    MaterialId = m.MaterialDefinition.MaterialId,
+                    Description = m.MaterialDefinition.Description,
+                    Version = m.MaterialDefinition.Version,
+                    MaterialClassId = m.MaterialDefinition.MaterialClassId,
+                    Specification = m.MaterialDefinition.Specification,
+                    Supplier = m.MaterialDefinition.Supplier,
+                    UoM = m.MaterialDefinition.UoM
+                },
+                WorkOrder = new WorkOrderModel
+                {
+                    Id = m.WorkOrder.Id,
+                    WorkOrderId = m.WorkOrder.WorkOrderId,
+                    Description = m.WorkOrder.Description,
+                    ScheduledStart = m.WorkOrder.ScheduledStart,
+                    ScheduledEnd = m.WorkOrder.ScheduledEnd,
+
+                }
+            });
+
             var pageSize = Configuration.GetValue("PageSize", 10);
 
-            materialRequirementViewModel.MaterialRequirementList = await PaginatedList<MaterialRequirement>.CreateAsync(
-                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+            materialRequirementViewModel.MaterialRequirementList = await PaginatedList<MaterialRequirementModel>.CreateAsync(
+                query2.AsNoTracking(), pageIndex ?? 1, pageSize);
 
             return View(materialRequirementViewModel);
 

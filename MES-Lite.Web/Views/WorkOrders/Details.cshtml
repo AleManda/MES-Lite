@@ -1,4 +1,5 @@
-﻿@model MES_Lite.MesEntities.WorkOrder
+﻿@using MES_Lite.MesEntities.Enums
+@model MES_Lite.MesEntities.WorkOrder
 
 @{
     ViewData["Title"] = "Details";
@@ -42,6 +43,31 @@
         </dd>
     </dl>
 </div>
+
+
+
+@if (Model.Status == WorkOrderStatus.Planned)
+{
+    <a asp-action="ChangeStatus" asp-route-id="@Model.Id" asp-route-newStatus="Released">Rilascia</a>
+    <a asp-action="ChangeStatus" asp-route-id="@Model.Id" asp-route-newStatus="Cancelled">Annulla</a>
+}
+
+@if (Model.Status == WorkOrderStatus.Released)
+{
+    <a asp-action="ChangeStatus" asp-route-id="@Model.Id" asp-route-newStatus="Running">Avvia</a>
+    <a asp-action="ChangeStatus" asp-route-id="@Model.Id" asp-route-newStatus="Cancelled">Annulla</a>
+}
+
+@if (Model.Status == WorkOrderStatus.Running)
+{
+    <a asp-action="ChangeStatus" asp-route-id="@Model.Id" asp-route-newStatus="Completed">Completa</a>
+}
+
+
+
+
+
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

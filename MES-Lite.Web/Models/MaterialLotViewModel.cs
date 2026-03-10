@@ -5,7 +5,7 @@ namespace MES_Lite.Web.Models
 {
     public class MaterialLotViewModel
     {
-        public PaginatedList<MaterialLot> MaterialLotsList { get; set; }
+        public PaginatedList<MaterialLotModel> MaterialLotsList { get; set; }
 
         public string? CurrentFilterId { get; set; } = string.Empty;
         public int CurrentFilterMatdefId { get; set; }

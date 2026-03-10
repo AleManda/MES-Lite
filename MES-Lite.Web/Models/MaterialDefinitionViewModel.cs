@@ -5,7 +5,7 @@ namespace MES_Lite.Web.Models
 {
     public class MaterialDefinitionViewModel
     {
-        public PaginatedList<MaterialDefinition> MaterialDefsList { get; set; }
+        public PaginatedList<MaterialDefinitionModel> MaterialDefsList { get; set; }
 
         public string? CurrentFilterId { get; set; }
         public string? CurrentFilterDescr { get; set; }

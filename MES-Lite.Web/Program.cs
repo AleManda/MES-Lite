@@ -1,6 +1,7 @@
+using MES_Lite.Data;
+using MES_Lite.Web.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
-using MES_Lite.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MesLiteDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IWorkOrderWorkflowService, WorkOrderWorkflowService>();
+
 
 
 

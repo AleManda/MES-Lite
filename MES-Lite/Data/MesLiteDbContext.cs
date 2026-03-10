@@ -92,6 +92,16 @@ namespace MES_Lite.Data
                 .HasIndex(w => w.WorkOrderId) 
                 .IsUnique(); // Identificatore di dominio
 
+
+
+
+            // Map enum <-> string so EF reads/writes the textual values already in the DB
+            modelBuilder.Entity<WorkOrder>()
+                .Property(w => w.Status)
+                .HasConversion<string>()
+                .HasMaxLength(50)
+                .HasColumnType("nvarchar(50)");
+
             // WorkOrderId è obbligatorio
             modelBuilder.Entity<WorkOrder>() 
                 .Property(w => w.WorkOrderId) 

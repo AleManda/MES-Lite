@@ -19,9 +19,9 @@ namespace MES_Lite.MesEntities
         [Required]
         public string UoM { get; set; } = "pcs";
         [Required]
-        public int MaterialClassId { get; set; } 
-        public string? Specification { get; set; } 
-        public string? Supplier { get; set; }
+        public int MaterialClassId { get; set; }
+        public string? Specification { get; set; } = String.Empty;
+        public string? Supplier { get; set; } = String.Empty;
         [Required]
         public bool Conformity { get; set; }
 

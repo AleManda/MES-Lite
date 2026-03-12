@@ -27,6 +27,14 @@ namespace MES_Lite.Web.Controllers
             Configuration = configuration;
         }
 
+        //_______________________________________________________________________________________
+        //_______________________________________________________________________________________
+        //CRUD standard per WorkOrder, con filtri di ricerca e paginazione nella Index
+        //_______________________________________________________________________________________
+        //_______________________________________________________________________________________
+
+
+
         //__________________________________________________________________________________________
         // GET: WorkOrders
         public async Task<IActionResult> Index(string searchworderid,string searchdescr,string searchstartdate,
@@ -207,6 +215,7 @@ namespace MES_Lite.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var workOrder = await _context.WorkOrders.FindAsync(id);
+
             if (workOrder != null)
             {
                 _context.WorkOrders.Remove(workOrder);
@@ -228,6 +237,7 @@ namespace MES_Lite.Web.Controllers
         //__________________________________________________________________________________________
         //__________________________________________________________________________________________
         //__________________________________________________________________________________________
+
 
         public async Task<IActionResult> ChangeStatus(int id, WorkOrderStatus newStatus)
         {

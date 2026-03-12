@@ -131,7 +131,7 @@ namespace MES_Lite.Data
                 .HasOne(m => m.MaterialDefinition)
                 .WithMany()
                 .HasForeignKey(m => m.MaterialDefinitionId)
-                .OnDelete(DeleteBehavior.Restrict); // Non si può cancellare un MaterialDefinition se usato in un WorkOrder
+                .OnDelete(DeleteBehavior.Restrict); // Non si può cancellare un MaterialDefinition se usato in un WorkOrder(via Materialrequirements)
 
             // Configure precision for RequiredQuantity to avoid truncation
             modelBuilder.Entity<MaterialRequirement>()

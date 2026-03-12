@@ -27,6 +27,14 @@ namespace MES_Lite.Web.Controllers
             Configuration = configuration;
         }
 
+
+        //_______________________________________________________________________________________
+        //_______________________________________________________________________________________
+        //CRUD standard per MaterialDefinition, con filtri di ricerca e paginazione nella Index
+        //_______________________________________________________________________________________
+        //_______________________________________________________________________________________
+
+
         //_________________________________________________________________________________________
         // GET: MaterialDefinitions
         public async Task<IActionResult> Index(string searchid,string searchdescr,string searchversion,string searchuom,
@@ -49,31 +57,50 @@ namespace MES_Lite.Web.Controllers
             IQueryable<MaterialDefinition> query = _context.MaterialDefinitions;
 
             //Filtri presenti nella query
-            if (!string.IsNullOrEmpty(searchid))
+
+            // MaterialId è un identificatore di dominio, quindi uso Contains per permettere ricerche parziali
+            if (!string.IsNullOrEmpty(searchid))  
             {
                 query = query.Where(m => m.MaterialId.Contains(searchid));
             }
-            if (!string.IsNullOrEmpty(searchdescr))
+
+            // Description è un campo testuale, quindi uso Contains per permettere ricerche parziali
+            if (!string.IsNullOrEmpty(searchdescr)) 
             {
                 query = query.Where(m => m.Description.Contains(searchdescr));
             }
-            if (!string.IsNullOrEmpty(searchversion))
+
+            // Version è un campo testuale, quindi uso Contains per permettere ricerche parziali
+            if (!string.IsNullOrEmpty(searchversion)) 
             {
                 query = query.Where(m => m.Version.Contains(searchversion));
             }
 
-            if (searchclassid > 0)
-                query = query.Where(m => m.MaterialClassId == searchclassid);
+            // UoM è un campo testuale, quindi uso Contains per permettere ricerche parziali
+            if (!string.IsNullOrEmpty(searchuom))  
+            {
+                query = query.Where(m => m.UoM.Contains(searchuom));
+            }
 
-            if (!string.IsNullOrEmpty(searchspec))
+            // MaterialClassId è un identificatore di dominio, quindi uso l'uguaglianza
+            if (searchclassid > 0)
+            {
+                query = query.Where(m => m.MaterialClassId == searchclassid);
+            }
+
+            // Specification è un campo testuale, quindi uso Contains per permettere ricerche parziali
+            if (!string.IsNullOrEmpty(searchspec)) 
             {
                 query = query.Where(m => m.Specification.Contains(searchspec));
             }
-            if (!string.IsNullOrEmpty(searchsupplier))
+
+            // Supplier è un campo testuale, quindi uso Contains per permettere ricerche parziali
+            if (!string.IsNullOrEmpty(searchsupplier)) 
             {
                 query = query.Where(m => m.Supplier.Contains(searchsupplier));
             }
 
+            // La proiezione viene fatta a livello di database, quindi solo i campi necessari vengono recuperati
             IQueryable<MaterialDefinitionModel> query2 = query.Select(p => new MaterialDefinitionModel
             {
                 Id = p.Id,
@@ -91,7 +118,8 @@ namespace MES_Lite.Web.Controllers
 
             var pageSize = Configuration.GetValue("PageSize", 10);
 
-            // 
+            // La paginazione viene applicata a livello di database(skip/take), quindi solo i record
+            // necessari per la pagina corrente vengono recuperati
             materialDefinitionViewModel.MaterialDefsList = await PaginatedList<MaterialDefinitionModel>.CreateAsync(
                 query2.AsNoTracking(), pageIndex ?? 1, pageSize);
 
@@ -205,8 +233,8 @@ namespace MES_Lite.Web.Controllers
                 return NotFound();
             }
 
-            var materialDefinition = await _context.MaterialDefinitions
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //var materialDefinition = await _context.MaterialDefinitions.FirstOrDefaultAsync(m => m.Id == id);
+            var materialDefinition = await _context.MaterialDefinitions.FindAsync(id);
             if (materialDefinition == null)
             {
                 return NotFound();
@@ -215,7 +243,6 @@ namespace MES_Lite.Web.Controllers
             return View(materialDefinition);
         }
 
-
         //_________________________________________________________________________________________
         // POST: MaterialDefinitions/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -223,13 +250,24 @@ namespace MES_Lite.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var materialDefinition = await _context.MaterialDefinitions.FindAsync(id);
-            if (materialDefinition != null)
-            {
-                _context.MaterialDefinitions.Remove(materialDefinition);
-            }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                if (materialDefinition != null)
+                {
+                    _context.MaterialDefinitions.Remove(materialDefinition);
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErrorMessage"] =
+                    "Impossibile eliminare questo materiale.Controllare se ci sono Material Requirements o lotti associati";
+
+                return View();
+            }
         }
 
         private bool MaterialDefinitionExists(int id)
